@@ -339,8 +339,8 @@ class DashboardManager {
         
         // Validate current password
         let correctCurrentPassword;
-        if (window.PasswordSync) {
-            correctCurrentPassword = window.PasswordSync.getCurrentPassword(this.currentAdmin);
+        if (window.passwordManager) {
+            correctCurrentPassword = window.passwordManager.getPassword(this.currentAdmin);
         } else {
             const storedPassword = localStorage.getItem('admin_password_' + this.currentAdmin);
             const defaultPasswords = {
@@ -359,8 +359,8 @@ class DashboardManager {
         }
         
         // Save new password and sync with other tabs
-        if (window.PasswordSync) {
-            window.PasswordSync.broadcastPasswordChange(this.currentAdmin, newPassword);
+        if (window.passwordManager) {
+            window.passwordManager.setPassword(this.currentAdmin, newPassword);
         } else {
             localStorage.setItem('admin_password_' + this.currentAdmin, newPassword);
         }

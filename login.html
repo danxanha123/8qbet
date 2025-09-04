@@ -131,7 +131,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="asset/js/password-sync.js"></script>
+    <script src="asset/js/password-manager.js"></script>
     <script>
         // Demo login functionality (không có backend thực tế)
         document.getElementById('login-form').addEventListener('submit', function(e) {
@@ -145,10 +145,10 @@
             document.getElementById('success-message').style.display = 'none';
             
             // Demo login (thay thế cho PHP authentication)
-            // Kiểm tra mật khẩu đã thay đổi trong localStorage
+            // Kiểm tra mật khẩu đã thay đổi trong sessionStorage
             let correctPassword;
-            if (window.PasswordSync) {
-                correctPassword = window.PasswordSync.getCurrentPassword(username);
+            if (window.passwordManager) {
+                correctPassword = window.passwordManager.getPassword(username);
             } else {
                 const storedPassword = localStorage.getItem('admin_password_' + username);
                 const defaultPasswords = {
