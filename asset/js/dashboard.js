@@ -41,6 +41,8 @@ class DashboardManager {
             container_bg_color: "#5a1616",
             marquee_color: "#ffffff",
             footer_link: "https://www.93375347.com/",
+            favicon: "asset/images/68b29b5d9a666.png",
+            footer_image: "asset/images/68b29a2d69d64.jpeg",
             banners: [
                 "asset/images/68b29ac2d3515.jpg",
                 "asset/images/68b29ace6e010.jpg",
@@ -289,9 +291,23 @@ class DashboardManager {
     handleFooterForm(e) {
         e.preventDefault();
         this.currentConfig.footer_link = this.getValue('footer-link');
-        this.saveConfig();
-        this.showMessage(this.language === 'cn' ? '更新页脚设置成功！' : 'Cập nhật footer thành công!');
-        this.previewChanges();
+        
+        // Handle footer image upload
+        const footerImageFile = document.getElementById('footer-image-file').files[0];
+        if (footerImageFile) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.currentConfig.footer_image = e.target.result;
+                this.saveConfig();
+                this.showMessage(this.language === 'cn' ? '更新页脚设置成功！' : 'Cập nhật footer thành công!');
+                this.previewChanges();
+            };
+            reader.readAsDataURL(footerImageFile);
+        } else {
+            this.saveConfig();
+            this.showMessage(this.language === 'cn' ? '更新页脚设置成功！' : 'Cập nhật footer thành công!');
+            this.previewChanges();
+        }
     }
 
     // Handle password form
@@ -357,7 +373,15 @@ class DashboardManager {
         e.preventDefault();
         const file = document.getElementById('favicon-file').files[0];
         if (file) {
-            this.showMessage(this.language === 'cn' ? '上传网站图标成功！' : 'Upload favicon thành công!');
+            // Create a preview URL for the uploaded file
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.currentConfig.favicon = e.target.result;
+                this.saveConfig();
+                this.showMessage(this.language === 'cn' ? '上传网站图标成功！' : 'Upload favicon thành công!');
+                this.previewChanges();
+            };
+            reader.readAsDataURL(file);
         }
     }
 
@@ -365,8 +389,16 @@ class DashboardManager {
         e.preventDefault();
         const file = document.getElementById('banner-file').files[0];
         if (file) {
-            this.showMessage(this.language === 'cn' ? '上传横幅成功！' : 'Upload banner thành công!');
-            document.getElementById('banner-upload-form').reset();
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // Add new banner to the list
+                this.currentConfig.banners.push(e.target.result);
+                this.saveConfig();
+                this.showMessage(this.language === 'cn' ? '上传横幅成功！' : 'Upload banner thành công!');
+                this.previewChanges();
+                document.getElementById('banner-upload-form').reset();
+            };
+            reader.readAsDataURL(file);
         }
     }
 
@@ -409,8 +441,14 @@ class DashboardManager {
             icon: 'asset/images/8q.png'
         };
         
+        // Add to config
+        this.currentConfig.links.push(newLink);
+        this.saveConfig();
+        
         const linkElement = this.createLinkElement(newLink, linkCount);
         container.appendChild(linkElement);
+        
+        this.showMessage(this.language === 'cn' ? '添加链接成功！' : 'Thêm link thành công!');
     }
 
     // Handle remove link
@@ -433,7 +471,11 @@ class DashboardManager {
             'Bạn có chắc muốn xóa banner này?';
             
         if (confirm(confirmMessage)) {
+            // Remove banner from config
+            this.currentConfig.banners.splice(index, 1);
+            this.saveConfig();
             this.showMessage(this.language === 'cn' ? '删除横幅成功！' : 'Xóa banner thành công!');
+            this.previewChanges();
         }
     }
 

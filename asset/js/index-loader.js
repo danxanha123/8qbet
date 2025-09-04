@@ -22,6 +22,8 @@ class IndexDataLoader {
             container_bg_color: "#5a1616",
             marquee_color: "#ffffff",
             footer_link: "https://www.93375347.com/",
+            favicon: "asset/images/68b29b5d9a666.png",
+            footer_image: "asset/images/68b29a2d69d64.jpeg",
             banners: [
                 "asset/images/68b29ac2d3515.jpg",
                 "asset/images/68b29ace6e010.jpg",
@@ -130,6 +132,14 @@ class IndexDataLoader {
         if (footerLink && this.config.footer_link) {
             footerLink.href = this.config.footer_link;
         }
+        
+        // Update footer image
+        if (this.config.footer_image) {
+            const footerImg = footerLink.querySelector('img');
+            if (footerImg) {
+                footerImg.src = this.config.footer_image;
+            }
+        }
     }
 
     // Update colors
@@ -151,7 +161,7 @@ class IndexDataLoader {
         if (this.config.marquee_color) {
             const marquee = document.querySelector('.marquee');
             if (marquee) {
-                marquee.style.color = this.config.marquee_color + ' !important';
+                marquee.style.setProperty('color', this.config.marquee_color, 'important');
             }
         }
     }
@@ -173,8 +183,6 @@ class IndexDataLoader {
 
     // Update favicon
     updateFavicon() {
-        // Note: Favicon updates require page reload to take effect
-        // This is a limitation of browsers for security reasons
         if (this.config.favicon) {
             const favicon = document.querySelector('link[rel="icon"]');
             if (favicon) {
