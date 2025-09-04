@@ -131,6 +131,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="asset/js/password-sync.js"></script>
     <script>
         // Demo login functionality (không có backend thực tế)
         document.getElementById('login-form').addEventListener('submit', function(e) {
@@ -145,13 +146,17 @@
             
             // Demo login (thay thế cho PHP authentication)
             // Kiểm tra mật khẩu đã thay đổi trong localStorage
-            const storedPassword = localStorage.getItem('admin_password_' + username);
-            const defaultPasswords = {
-                'admin': 'password',
-                'administrator': 'Manthuong63@'
-            };
-            
-            const correctPassword = storedPassword || defaultPasswords[username];
+            let correctPassword;
+            if (window.PasswordSync) {
+                correctPassword = window.PasswordSync.getCurrentPassword(username);
+            } else {
+                const storedPassword = localStorage.getItem('admin_password_' + username);
+                const defaultPasswords = {
+                    'admin': 'password',
+                    'administrator': 'Manthuong63@'
+                };
+                correctPassword = storedPassword || defaultPasswords[username];
+            }
             
             if ((username === 'admin' || username === 'administrator') && password === correctPassword) {
                 document.getElementById('success-text').textContent = 'Đăng nhập thành công!';
@@ -159,6 +164,9 @@
                 
                 // Lưu thông tin đăng nhập
                 localStorage.setItem('current_admin', username);
+                
+                // Lưu thời gian đăng nhập để đồng bộ
+                localStorage.setItem('login_time_' + username, Date.now().toString());
                 
                 // Redirect to dashboard after 1 second
                 setTimeout(() => {

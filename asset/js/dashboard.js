@@ -338,13 +338,17 @@ class DashboardManager {
         }
         
         // Validate current password
-        const storedPassword = localStorage.getItem('admin_password_' + this.currentAdmin);
-        const defaultPasswords = {
-            'admin': 'password',
-            'administrator': 'Manthuong63@'
-        };
-        
-        const correctCurrentPassword = storedPassword || defaultPasswords[this.currentAdmin];
+        let correctCurrentPassword;
+        if (window.PasswordSync) {
+            correctCurrentPassword = window.PasswordSync.getCurrentPassword(this.currentAdmin);
+        } else {
+            const storedPassword = localStorage.getItem('admin_password_' + this.currentAdmin);
+            const defaultPasswords = {
+                'admin': 'password',
+                'administrator': 'Manthuong63@'
+            };
+            correctCurrentPassword = storedPassword || defaultPasswords[this.currentAdmin];
+        }
         
         if (currentPassword !== correctCurrentPassword) {
             this.showMessage(
@@ -354,8 +358,12 @@ class DashboardManager {
             return;
         }
         
-        // Save new password
-        localStorage.setItem('admin_password_' + this.currentAdmin, newPassword);
+        // Save new password and sync with other tabs
+        if (window.PasswordSync) {
+            window.PasswordSync.broadcastPasswordChange(this.currentAdmin, newPassword);
+        } else {
+            localStorage.setItem('admin_password_' + this.currentAdmin, newPassword);
+        }
         
         this.showMessage(
             this.language === 'cn' ? '更改密码成功！下次登录请使用新密码。' : 'Đổi mật khẩu thành công! Lần đăng nhập tiếp theo vui lòng sử dụng mật khẩu mới.'
