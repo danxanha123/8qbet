@@ -82,6 +82,21 @@ class DashboardManager {
     // Save configuration to localStorage
     saveConfig() {
         localStorage.setItem('dashboard_config', JSON.stringify(this.currentConfig));
+        this.notifyIndexPage();
+    }
+
+    // Notify index page to refresh data
+    notifyIndexPage() {
+        // Trigger storage event for same-tab communication
+        window.dispatchEvent(new StorageEvent('storage', {
+            key: 'dashboard_config',
+            newValue: JSON.stringify(this.currentConfig)
+        }));
+        
+        // Also try to refresh if index page is open in another tab
+        if (window.indexDataLoader) {
+            window.indexDataLoader.refresh();
+        }
     }
 
     // Update current user display
@@ -237,6 +252,7 @@ class DashboardManager {
         this.currentConfig.serviceUrl = this.getValue('serviceUrl');
         this.saveConfig();
         this.showMessage(this.language === 'cn' ? '更新基本信息成功！' : 'Cập nhật thông tin chung thành công!');
+        this.previewChanges();
     }
 
     // Handle logo settings
@@ -245,6 +261,7 @@ class DashboardManager {
         this.currentConfig.logo_size = this.getValue('logo-size-slider');
         this.saveConfig();
         this.showMessage(this.language === 'cn' ? '更新标志大小成功！' : 'Cập nhật kích thước logo thành công!');
+        this.previewChanges();
     }
 
     // Handle logo upload
@@ -265,6 +282,7 @@ class DashboardManager {
         this.currentConfig.marquee_color = this.getValue('marquee-color');
         this.saveConfig();
         this.showMessage(this.language === 'cn' ? '更新颜色设置成功！' : 'Cập nhật màu sắc thành công!');
+        this.previewChanges();
     }
 
     // Handle footer form
@@ -273,6 +291,7 @@ class DashboardManager {
         this.currentConfig.footer_link = this.getValue('footer-link');
         this.saveConfig();
         this.showMessage(this.language === 'cn' ? '更新页脚设置成功！' : 'Cập nhật footer thành công!');
+        this.previewChanges();
     }
 
     // Handle password form
@@ -356,6 +375,7 @@ class DashboardManager {
         e.preventDefault();
         this.saveLinksFromForm();
         this.showMessage(this.language === 'cn' ? '更新链接列表成功！' : 'Cập nhật danh sách link thành công!');
+        this.previewChanges();
     }
 
     // Save links from form
@@ -456,6 +476,18 @@ class DashboardManager {
         }, 3000);
     }
 
+    // Preview changes on index page
+    previewChanges() {
+        const previewMessage = this.language === 'cn' ? 
+            '更改已应用到主页，请刷新主页查看效果！' : 
+            'Thay đổi đã được áp dụng cho trang chủ, vui lòng làm mới trang chủ để xem hiệu ứng!';
+        
+        // Show preview message after a short delay
+        setTimeout(() => {
+            this.showMessage(previewMessage, 'success');
+        }, 1000);
+    }
+
     // Change language
     changeLanguage(selectedValue) {
         if (selectedValue !== window.location.pathname.split('/').pop()) {
@@ -500,5 +532,20 @@ function changeLanguage(selectedValue) {
 function deleteBanner(index) {
     if (dashboardManager) {
         dashboardManager.deleteBanner(index);
+    }
+}
+
+function refreshIndexPage() {
+    // Force refresh the index page if it's open
+    if (window.indexDataLoader) {
+        window.indexDataLoader.refresh();
+    }
+    
+    // Show message about refreshing
+    if (dashboardManager) {
+        const message = dashboardManager.language === 'cn' ? 
+            '正在刷新主页数据...' : 
+            'Đang làm mới dữ liệu trang chủ...';
+        dashboardManager.showMessage(message, 'success');
     }
 }
