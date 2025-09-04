@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - 8qbet</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            margin: 5px 0;
+            transition: all 0.3s ease;
+        }
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        .main-content {
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 10px;
+        }
+        .banner-preview {
+            width: 100px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        .form-control, .form-select {
+            border-radius: 10px;
+            border: 2px solid #e1e5e9;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+        .language-selector {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 col-lg-2 px-0">
+                <div class="sidebar p-3">
+                    <div class="text-center mb-4">
+                        <img src="asset/images/68b29a71536f9.png" alt="8qbet" style="width: 60px; height: 60px;">
+                        <h5 class="mt-2">Admin Panel</h5>
+                        <small>Xin chào, <span id="admin-username">admin</span></small>
+                    </div>
+                    
+                    <nav class="nav flex-column">
+                        <a class="nav-link active" href="#general" data-bs-toggle="tab">
+                            <i class="fas fa-cog"></i> Thông tin chung
+                        </a>
+                        <a class="nav-link" href="#branding" data-bs-toggle="tab">
+                            <i class="fas fa-palette"></i> Logo & Background
+                        </a>
+                        <a class="nav-link" href="#colors" data-bs-toggle="tab">
+                            <i class="fas fa-paint-brush"></i> Màu sắc
+                        </a>
+                        <a class="nav-link" href="#favicon" data-bs-toggle="tab">
+                            <i class="fas fa-star"></i> Favicon
+                        </a>
+                        <a class="nav-link" href="#footer" data-bs-toggle="tab">
+                            <i class="fas fa-shoe-prints"></i> Footer
+                        </a>
+                        <a class="nav-link" href="#banners" data-bs-toggle="tab">
+                            <i class="fas fa-images"></i> Quản lý banner
+                        </a>
+                        <a class="nav-link" href="#links" data-bs-toggle="tab">
+                            <i class="fas fa-link"></i> Quản lý links
+                        </a>
+                        <a class="nav-link" href="#password" data-bs-toggle="tab">
+                            <i class="fas fa-key"></i> Đổi mật khẩu
+                        </a>
+                        <a class="nav-link" href="index.html" target="_blank">
+                            <i class="fas fa-eye"></i> Xem trang chủ
+                        </a>
+                        <a class="nav-link" href="login.html">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </a>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 col-lg-10">
+                <div class="main-content p-4">
+                    <!-- Language Selector -->
+                    <div class="language-selector">
+                        <select class="form-select form-select-sm" id="languageSelector" onchange="changeLanguage(this.value)">
+                            <option value="dashboard.html" selected>Tiếng Việt</option>
+                            <option value="dashboardcn.html">中文</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                            <small class="text-muted">Đăng nhập với tài khoản: <strong id="current-username">admin</strong></small>
+                        </div>
+                        <a href="index.html" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> Xem trang chủ
+                        </a>
+                    </div>
+
+                    <div id="message-container"></div>
+
+                    <div class="tab-content">
+                        <!-- Thông tin chung -->
+                        <div class="tab-pane fade show active" id="general">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-cog"></i> Thông tin chung</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="general-form">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Tiêu đề trang</label>
+                                                <input type="text" class="form-control" id="title" value="8Qbet.com Kiểm Tra Độ An Toàn Link Truy Cập" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">URL App</label>
+                                                <input type="url" class="form-control" id="appUrl" value="https://www.93375347.com/down" required>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">Nội dung chạy chữ</label>
+                                            <textarea class="form-control" id="marquee" rows="3" required>Chào mừng đến với 8Qbet.com – Ưu đãi nạp đầu, Ngày hội thành viên hàng tháng, Cấp độ VIP đặc biệt, Thưởng giới thiệu bạn bè, Nạp rút tiền siêu nhanh – Bảo mật an toàn, không rủi ro!</textarea>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <label class="form-label">URL Customer Service</label>
+                                            <input type="url" class="form-control" id="serviceUrl" value="https://xzjhsn5po7.lyau1vg8.com/chatwindow.aspx?siteId=65002665&planId=54c0e15d-3356-4460-abe0-648cd6d0bbee" required>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Lưu thay đổi
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quản lý Logo & Background -->
+                        <div class="tab-pane fade" id="branding">
+                            <div class="row">
+                                <!-- Logo Management -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-image"></i> Quản lý Logo</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <img src="asset/images/68b29a71536f9.png" alt="Current Logo" style="max-width: 200px; max-height: 100px; object-fit: contain;">
+                                                <p class="mt-2 text-muted">Logo hiện tại</p>
+                                            </div>
+                                            
+                                            <form id="logo-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload logo mới</label>
+                                                    <input type="file" class="form-control" id="logo-file" accept="image/*">
+                                                    <small class="text-muted">Khuyến nghị: PNG với nền trong suốt, kích thước tối đa 200x100px</small>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-upload"></i> Cập nhật Logo
+                                                </button>
+                                            </form>
+                                            
+                                            <hr>
+                                            
+                                            <form id="logo-settings-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Kích thước logo: <span id="logo-size-value">50%</span></label>
+                                                    <input type="range" class="form-range" id="logo-size-slider" min="50" max="200" value="50" oninput="updateLogoSize(this.value)">
+                                                    <small class="text-muted">Kéo thanh để điều chỉnh kích thước logo</small>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-success w-100">
+                                                    <i class="fas fa-save"></i> Lưu kích thước
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Background Management -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-image"></i> Quản lý Background</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <img src="asset/images/background.jpg" alt="Current Background" style="max-width: 200px; max-height: 100px; object-fit: cover; border-radius: 5px;">
+                                                <p class="mt-2 text-muted">Background hiện tại</p>
+                                            </div>
+                                            
+                                            <form id="background-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload background mới</label>
+                                                    <input type="file" class="form-control" id="background-file" accept="image/*">
+                                                    <small class="text-muted">Khuyến nghị: JPG/PNG, kích thước tối đa 1920x1080px</small>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-upload"></i> Cập nhật Background
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quản lý màu sắc -->
+                        <div class="tab-pane fade" id="colors">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-paint-brush"></i> Màu sắc</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <form id="colors-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Loại background</label>
+                                                    <select class="form-select" id="background-type" onchange="toggleBackgroundType(this.value)">
+                                                        <option value="color" selected>Màu sắc</option>
+                                                        <option value="image">Hình ảnh</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="mb-3" id="background-color-group">
+                                                    <label class="form-label">Màu nền</label>
+                                                    <input type="color" class="form-control form-control-color w-100" id="background-color" value="#121712">
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">Màu nền container</label>
+                                                    <input type="color" class="form-control form-control-color w-100" id="container-bg-color" value="#5a1616">
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">Màu chữ chạy (Marquee)</label>
+                                                    <input type="color" class="form-control form-control-color w-100" id="marquee-color" value="#ffffff">
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-save"></i> Lưu màu sắc
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quản lý Favicon -->
+                        <div class="tab-pane fade" id="favicon">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-star"></i> Quản lý Favicon</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <img src="asset/images/68b29b5d9a666.png" alt="Current Favicon" style="width: 32px; height: 32px; object-fit: contain;">
+                                                <p class="mt-2 text-muted">Favicon hiện tại</p>
+                                            </div>
+                                            
+                                            <form id="favicon-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload favicon mới</label>
+                                                    <input type="file" class="form-control" id="favicon-file" accept="image/*,.ico">
+                                                    <small class="text-muted">Hỗ trợ: PNG, ICO, kích thước tối đa 32x32px</small>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-upload"></i> Cập nhật Favicon
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quản lý Footer -->
+                        <div class="tab-pane fade" id="footer">
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-shoe-prints"></i> Quản lý Footer</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <img src="asset/images/68b29a2d69d64.jpeg" alt="Current Footer Image" style="max-width: 200px; max-height: 100px; object-fit: cover; border-radius: 5px;">
+                                                <p class="mt-2 text-muted">Ảnh footer hiện tại</p>
+                                            </div>
+                                            
+                                            <form id="footer-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Link footer</label>
+                                                    <input type="url" class="form-control" id="footer-link" value="https://www.93375347.com/" required>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">Upload ảnh footer mới (tùy chọn)</label>
+                                                    <input type="file" class="form-control" id="footer-image-file" accept="image/*">
+                                                    <small class="text-muted">Để trống nếu không muốn thay đổi ảnh</small>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-save"></i> Cập nhật Footer
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quản lý banner -->
+                        <div class="tab-pane fade" id="banners">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-images"></i> Quản lý banner</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="banner-upload-form" class="mb-4">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <label class="form-label">Upload ảnh banner mới</label>
+                                                <input type="file" class="form-control" id="banner-file" accept="image/*" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">&nbsp;</label>
+                                                <button type="submit" class="btn btn-primary d-block w-100">
+                                                    <i class="fas fa-upload"></i> Upload
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <h6>Banner hiện tại:</h6>
+                                    <div class="row" id="banners-container">
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="asset/images/68b29ac2d3515.jpg" class="card-img-top" alt="Banner 1">
+                                                <div class="card-body p-2">
+                                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(0)">
+                                                        <i class="fas fa-trash"></i> Xóa
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="asset/images/68b29ace6e010.jpg" class="card-img-top" alt="Banner 2">
+                                                <div class="card-body p-2">
+                                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(1)">
+                                                        <i class="fas fa-trash"></i> Xóa
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="asset/images/68b29ad604fe7.jpg" class="card-img-top" alt="Banner 3">
+                                                <div class="card-body p-2">
+                                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(2)">
+                                                        <i class="fas fa-trash"></i> Xóa
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="asset/images/68b29addeda4e.jpg" class="card-img-top" alt="Banner 4">
+                                                <div class="card-body p-2">
+                                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(3)">
+                                                        <i class="fas fa-trash"></i> Xóa
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quản lý links -->
+                        <div class="tab-pane fade" id="links">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-link"></i> Quản lý links</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="links-form">
+                                        <div id="links-container">
+                                            <div class="row mb-3 link-item">
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Tên link</label>
+                                                    <input type="text" class="form-control" name="links[0][name]" value="Link1" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Hiển thị</label>
+                                                    <input type="text" class="form-control" name="links[0][showUrl]" value="NHẬN QUÀ NGAY" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">URL đích</label>
+                                                    <input type="url" class="form-control" name="links[0][jumpUrl]" value="https://www.93375347.com/" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Icon</label>
+                                                    <input type="text" class="form-control" name="links[0][icon]" value="asset/images/8q.png" required>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 link-item">
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Tên link</label>
+                                                    <input type="text" class="form-control" name="links[1][name]" value="Link2" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Hiển thị</label>
+                                                    <input type="text" class="form-control" name="links[1][showUrl]" value="ĐÁNG TIN CẬY" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">URL đích</label>
+                                                    <input type="url" class="form-control" name="links[1][jumpUrl]" value="https://www.93375347.com/" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Icon</label>
+                                                    <input type="text" class="form-control" name="links[1][icon]" value="asset/images/8q.png" required>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 link-item">
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Tên link</label>
+                                                    <input type="text" class="form-control" name="links[2][name]" value="Link3" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Hiển thị</label>
+                                                    <input type="text" class="form-control" name="links[2][showUrl]" value="BẢO MẬT CAO" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">URL đích</label>
+                                                    <input type="url" class="form-control" name="links[2][jumpUrl]" value="https://www.93375347.com/" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Icon</label>
+                                                    <input type="text" class="form-control" name="links[2][icon]" value="asset/images/8q.png" required>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 link-item">
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Tên link</label>
+                                                    <input type="text" class="form-control" name="links[3][name]" value="Link4" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">Hiển thị</label>
+                                                    <input type="text" class="form-control" name="links[3][showUrl]" value="RÚT TIỀN NHANH" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">URL đích</label>
+                                                    <input type="url" class="form-control" name="links[3][jumpUrl]" value="https://www.93375347.com/" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">Icon</label>
+                                                    <input type="text" class="form-control" name="links[3][icon]" value="asset/images/8q.png" required>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="button" class="btn btn-success mb-3" id="add-link">
+                                            <i class="fas fa-plus"></i> Thêm link
+                                        </button>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> Lưu thay đổi
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Thay đổi mật khẩu -->
+                        <div class="tab-pane fade" id="password">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-key"></i> Thay đổi mật khẩu</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="password-form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Tài khoản hiện tại</label>
+                                                    <input type="text" class="form-control" id="current-account" value="admin" readonly>
+                                                    <small class="text-muted">Tài khoản đang đăng nhập</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Mật khẩu hiện tại</label>
+                                                    <input type="password" class="form-control" id="current-password" required>
+                                                    <small class="text-muted">Nhập mật khẩu hiện tại để xác nhận</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Mật khẩu mới</label>
+                                                    <input type="password" class="form-control" id="new-password" required>
+                                                    <small class="text-muted">Mật khẩu mới phải có ít nhất 6 ký tự</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">Xác nhận mật khẩu mới</label>
+                                                    <input type="password" class="form-control" id="confirm-password" required>
+                                                    <small class="text-muted">Nhập lại mật khẩu mới</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-key"></i> Thay đổi mật khẩu
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Demo admin functionality (không có backend thực tế)
+        let currentConfig = {
+            title: "8Qbet.com Kiểm Tra Độ An Toàn Link Truy Cập",
+            marquee: "Chào mừng đến với 8Qbet.com – Ưu đãi nạp đầu, Ngày hội thành viên hàng tháng, Cấp độ VIP đặc biệt, Thưởng giới thiệu bạn bè, Nạp rút tiền siêu nhanh – Bảo mật an toàn, không rủi ro!",
+            appUrl: "https://www.93375347.com/down",
+            serviceUrl: "https://xzjhsn5po7.lyau1vg8.com/chatwindow.aspx?siteId=65002665&planId=54c0e15d-3356-4460-abe0-648cd6d0bbee",
+            logo_size: 50,
+            background_type: "color",
+            background_color: "#121712",
+            container_bg_color: "#5a1616",
+            marquee_color: "#ffffff",
+            footer_link: "https://www.93375347.com/",
+            banners: [
+                "asset/images/68b29ac2d3515.jpg",
+                "asset/images/68b29ace6e010.jpg",
+                "asset/images/68b29ad604fe7.jpg",
+                "asset/images/68b29addeda4e.jpg"
+            ],
+            links: [
+                { name: "Link1", showUrl: "NHẬN QUÀ NGAY", jumpUrl: "https://www.93375347.com/", icon: "asset/images/8q.png" },
+                { name: "Link2", showUrl: "ĐÁNG TIN CẬY", jumpUrl: "https://www.93375347.com/", icon: "asset/images/8q.png" },
+                { name: "Link3", showUrl: "BẢO MẬT CAO", jumpUrl: "https://www.93375347.com/", icon: "asset/images/8q.png" },
+                { name: "Link4", showUrl: "RÚT TIỀN NHANH", jumpUrl: "https://www.93375347.com/", icon: "asset/images/8q.png" }
+            ]
+        };
+
+        // Show message function
+        function showMessage(message, type = 'success') {
+            const messageContainer = document.getElementById('message-container');
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
+            
+            messageContainer.innerHTML = `
+                <div class="alert ${alertClass}" role="alert">
+                    <i class="${icon}"></i> ${message}
+                </div>
+            `;
+            
+            setTimeout(() => {
+                messageContainer.innerHTML = '';
+            }, 3000);
+        }
+
+        // Form handlers
+        document.getElementById('general-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            currentConfig.title = document.getElementById('title').value;
+            currentConfig.marquee = document.getElementById('marquee').value;
+            currentConfig.appUrl = document.getElementById('appUrl').value;
+            currentConfig.serviceUrl = document.getElementById('serviceUrl').value;
+            showMessage('Cập nhật thông tin chung thành công!');
+        });
+
+        document.getElementById('logo-settings-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            currentConfig.logo_size = document.getElementById('logo-size-slider').value;
+            showMessage('Cập nhật kích thước logo thành công!');
+        });
+
+        document.getElementById('colors-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            currentConfig.background_type = document.getElementById('background-type').value;
+            currentConfig.background_color = document.getElementById('background-color').value;
+            currentConfig.container_bg_color = document.getElementById('container-bg-color').value;
+            currentConfig.marquee_color = document.getElementById('marquee-color').value;
+            showMessage('Cập nhật màu sắc thành công!');
+        });
+
+        document.getElementById('footer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            currentConfig.footer_link = document.getElementById('footer-link').value;
+            showMessage('Cập nhật footer thành công!');
+        });
+
+        document.getElementById('password-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword !== confirmPassword) {
+                showMessage('Mật khẩu mới và xác nhận mật khẩu không khớp!', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showMessage('Mật khẩu mới phải có ít nhất 6 ký tự!', 'error');
+                return;
+            }
+            
+            showMessage('Đổi mật khẩu thành công!');
+            document.getElementById('password-form').reset();
+        });
+
+        // File upload handlers (demo)
+        document.getElementById('logo-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('logo-file').files[0];
+            if (file) {
+                showMessage('Upload logo thành công!');
+            }
+        });
+
+        document.getElementById('background-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('background-file').files[0];
+            if (file) {
+                showMessage('Upload background thành công!');
+            }
+        });
+
+        document.getElementById('favicon-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('favicon-file').files[0];
+            if (file) {
+                showMessage('Upload favicon thành công!');
+            }
+        });
+
+        document.getElementById('banner-upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('banner-file').files[0];
+            if (file) {
+                showMessage('Upload banner thành công!');
+                document.getElementById('banner-upload-form').reset();
+            }
+        });
+
+        // Banner management
+        function deleteBanner(index) {
+            if (confirm('Bạn có chắc muốn xóa banner này?')) {
+                showMessage('Xóa banner thành công!');
+            }
+        }
+
+        // Link management
+        document.getElementById('add-link').addEventListener('click', function() {
+            const container = document.getElementById('links-container');
+            const linkCount = container.children.length;
+            const newLink = document.createElement('div');
+            newLink.className = 'row mb-3 link-item';
+            newLink.innerHTML = `
+                <div class="col-md-2">
+                    <label class="form-label">Tên link</label>
+                    <input type="text" class="form-control" name="links[${linkCount}][name]" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Hiển thị</label>
+                    <input type="text" class="form-control" name="links[${linkCount}][showUrl]" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">URL đích</label>
+                    <input type="url" class="form-control" name="links[${linkCount}][jumpUrl]" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Icon</label>
+                    <input type="text" class="form-control" name="links[${linkCount}][icon]" value="asset/images/8q.png" required>
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(newLink);
+        });
+
+        // Remove link
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-link') || e.target.closest('.remove-link')) {
+                if (confirm('Bạn có chắc muốn xóa link này?')) {
+                    e.target.closest('.link-item').remove();
+                }
+            }
+        });
+
+        document.getElementById('links-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showMessage('Cập nhật danh sách link thành công!');
+        });
+
+        // Utility functions
+        function updateLogoSize(value) {
+            document.getElementById('logo-size-value').textContent = value + '%';
+        }
+
+        function toggleBackgroundType(type) {
+            const colorGroup = document.getElementById('background-color-group');
+            if (type === 'color') {
+                colorGroup.style.display = 'block';
+            } else {
+                colorGroup.style.display = 'none';
+            }
+        }
+
+        function changeLanguage(selectedValue) {
+            if (selectedValue !== window.location.pathname.split('/').pop()) {
+                window.location.href = selectedValue;
+            }
+        }
+    </script>
+</body>
+</html>

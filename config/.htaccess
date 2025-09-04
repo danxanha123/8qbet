@@ -1,4 +1,0 @@
-# Bảo vệ thư mục config
-Order Deny,Allow
-Deny from all
-
