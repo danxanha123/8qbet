@@ -145,6 +145,9 @@ class DashboardManager {
         // Load links
         this.loadLinks();
         
+        // Load banners
+        this.updateBannerDisplay();
+        
         // Toggle background type
         this.toggleBackgroundType(this.currentConfig.background_type);
     }
@@ -385,20 +388,32 @@ class DashboardManager {
         }
     }
 
-    handleBannerUpload(e) {
+    async handleBannerUpload(e) {
         e.preventDefault();
         const file = document.getElementById('banner-file').files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                // Add new banner to the list
-                this.currentConfig.banners.push(e.target.result);
+            try {
+                // Use FileManager to upload file
+                const fileInfo = await window.fileManager.uploadFile(file, 'banner');
+                
+                // Add new banner to the list with file ID
+                this.currentConfig.banners.push({
+                    id: fileInfo.id,
+                    src: fileInfo.fileData,
+                    fileName: fileInfo.fileName
+                });
+                
                 this.saveConfig();
+                
+                // Update dashboard display
+                this.updateBannerDisplay();
+                
                 this.showMessage(this.language === 'cn' ? '上传横幅成功！' : 'Upload banner thành công!');
                 this.previewChanges();
                 document.getElementById('banner-upload-form').reset();
-            };
-            reader.readAsDataURL(file);
+            } catch (error) {
+                this.showMessage(this.language === 'cn' ? '上传横幅失败！' : 'Upload banner thất bại!', 'error');
+            }
         }
     }
 
@@ -471,12 +486,67 @@ class DashboardManager {
             'Bạn có chắc muốn xóa banner này?';
             
         if (confirm(confirmMessage)) {
+            const bannerToDelete = this.currentConfig.banners[index];
+            
             // Remove banner from config
             this.currentConfig.banners.splice(index, 1);
             this.saveConfig();
-            this.showMessage(this.language === 'cn' ? '删除横幅成功！' : 'Xóa banner thành công!');
+            
+            // Delete from FileManager if it has an ID
+            if (bannerToDelete && bannerToDelete.id) {
+                window.fileManager.deleteFile(bannerToDelete.id);
+            }
+            
+            // Update dashboard UI - remove the banner element
+            this.updateBannerDisplay();
+            
+            // Show success message
+            const deleteMessage = this.language === 'cn' ? 
+                '删除横幅成功！横幅已从配置和存储中完全移除。' : 
+                'Xóa banner thành công! Banner đã được xóa hoàn toàn khỏi cấu hình và bộ nhớ.';
+            
+            this.showMessage(deleteMessage);
             this.previewChanges();
         }
+    }
+
+    // Update banner display in dashboard
+    updateBannerDisplay() {
+        const bannersContainer = document.getElementById('banners-container');
+        if (!bannersContainer) return;
+
+        // Clear current display
+        bannersContainer.innerHTML = '';
+
+        // Recreate banner elements
+        this.currentConfig.banners.forEach((bannerSrc, index) => {
+            const bannerElement = this.createBannerElement(bannerSrc, index);
+            bannersContainer.appendChild(bannerElement);
+        });
+    }
+
+    // Create banner element for dashboard display
+    createBannerElement(bannerData, index) {
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-md-3 mb-3';
+        
+        // Handle both string (old format) and object (new format)
+        const bannerSrc = typeof bannerData === 'string' ? bannerData : bannerData.src;
+        const bannerName = typeof bannerData === 'string' ? `横幅 ${index + 1}` : bannerData.fileName;
+        
+        colDiv.innerHTML = `
+            <div class="card">
+                <img src="${bannerSrc}" class="card-img-top" alt="${bannerName}">
+                <div class="card-body p-2">
+                    <small class="text-muted d-block mb-2">${bannerName}</small>
+                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(${index})">
+                        <i class="fas fa-trash"></i> ${this.language === 'cn' ? '删除' : 'Xóa'}
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        return colDiv;
     }
 
     // Utility functions

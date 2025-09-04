@@ -82,8 +82,10 @@ class IndexDataLoader {
     updateBanners() {
         const bannerSlides = document.querySelectorAll('.swiper-slide img');
         if (bannerSlides && this.config.banners) {
-            this.config.banners.forEach((bannerSrc, index) => {
+            this.config.banners.forEach((bannerData, index) => {
                 if (bannerSlides[index]) {
+                    // Handle both string (old format) and object (new format)
+                    const bannerSrc = typeof bannerData === 'string' ? bannerData : bannerData.src;
                     bannerSlides[index].src = bannerSrc;
                 }
             });
