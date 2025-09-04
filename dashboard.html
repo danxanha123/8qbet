@@ -604,6 +604,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // Demo admin functionality (không có backend thực tế)
+        // Cập nhật tên người dùng hiện tại
+        const currentAdmin = localStorage.getItem('current_admin') || 'admin';
+        document.getElementById('admin-username').textContent = currentAdmin;
+        document.getElementById('current-username').textContent = currentAdmin;
+        document.getElementById('current-account').value = currentAdmin;
+        
         let currentConfig = {
             title: "8Qbet.com Kiểm Tra Độ An Toàn Link Truy Cập",
             marquee: "Chào mừng đến với 8Qbet.com – Ưu đãi nạp đầu, Ngày hội thành viên hàng tháng, Cấp độ VIP đặc biệt, Thưởng giới thiệu bạn bè, Nạp rút tiền siêu nhanh – Bảo mật an toàn, không rủi ro!",
@@ -682,18 +688,38 @@
             const currentPassword = document.getElementById('current-password').value;
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
+            const currentAccount = document.getElementById('current-account').value;
             
+            // Xác thực mật khẩu mới và xác nhận mật khẩu
             if (newPassword !== confirmPassword) {
                 showMessage('Mật khẩu mới và xác nhận mật khẩu không khớp!', 'error');
                 return;
             }
             
+            // Xác thực độ dài mật khẩu mới
             if (newPassword.length < 6) {
                 showMessage('Mật khẩu mới phải có ít nhất 6 ký tự!', 'error');
                 return;
             }
             
-            showMessage('Đổi mật khẩu thành công!');
+            // Xác thực mật khẩu hiện tại
+            const storedPassword = localStorage.getItem('admin_password_' + currentAccount);
+            const defaultPasswords = {
+                'admin': 'password',
+                'administrator': 'Manthuong63@'
+            };
+            
+            const correctCurrentPassword = storedPassword || defaultPasswords[currentAccount];
+            
+            if (currentPassword !== correctCurrentPassword) {
+                showMessage('Mật khẩu hiện tại không đúng!', 'error');
+                return;
+            }
+            
+            // Lưu mật khẩu mới vào localStorage
+            localStorage.setItem('admin_password_' + currentAccount, newPassword);
+            
+            showMessage('Đổi mật khẩu thành công! Lần đăng nhập tiếp theo vui lòng sử dụng mật khẩu mới.');
             document.getElementById('password-form').reset();
         });
 

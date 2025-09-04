@@ -603,6 +603,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // 中文版本的管理功能
+        // 更新当前用户名
+        const currentAdmin = localStorage.getItem('current_admin') || 'admin';
+        document.getElementById('admin-username').textContent = currentAdmin;
+        document.getElementById('current-username').textContent = currentAdmin;
+        document.getElementById('current-account').value = currentAdmin;
+        
         let currentConfig = {
             title: "8Qbet.com 安全检查链接访问",
             marquee: "欢迎来到8Qbet.com – 首充优惠，每月会员日，特殊VIP等级，推荐好友奖励，超快存取款 – 安全可靠，无风险！",
@@ -681,18 +687,38 @@
             const currentPassword = document.getElementById('current-password').value;
             const newPassword = document.getElementById('new-password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
+            const currentAccount = document.getElementById('current-account').value;
             
+            // 验证新密码和确认密码是否匹配
             if (newPassword !== confirmPassword) {
                 showMessage('新密码和确认密码不匹配！', 'error');
                 return;
             }
             
+            // 验证新密码长度
             if (newPassword.length < 6) {
                 showMessage('新密码至少需要6个字符！', 'error');
                 return;
             }
             
-            showMessage('更改密码成功！');
+            // 验证当前密码
+            const storedPassword = localStorage.getItem('admin_password_' + currentAccount);
+            const defaultPasswords = {
+                'admin': 'password',
+                'administrator': 'Manthuong63@'
+            };
+            
+            const correctCurrentPassword = storedPassword || defaultPasswords[currentAccount];
+            
+            if (currentPassword !== correctCurrentPassword) {
+                showMessage('当前密码不正确！', 'error');
+                return;
+            }
+            
+            // 保存新密码到localStorage
+            localStorage.setItem('admin_password_' + currentAccount, newPassword);
+            
+            showMessage('更改密码成功！下次登录请使用新密码。');
             document.getElementById('password-form').reset();
         });
 

@@ -144,17 +144,21 @@
             document.getElementById('success-message').style.display = 'none';
             
             // Demo login (thay thế cho PHP authentication)
-            if (username === 'admin' && password === 'password') {
+            // Kiểm tra mật khẩu đã thay đổi trong localStorage
+            const storedPassword = localStorage.getItem('admin_password_' + username);
+            const defaultPasswords = {
+                'admin': 'password',
+                'administrator': 'Manthuong63@'
+            };
+            
+            const correctPassword = storedPassword || defaultPasswords[username];
+            
+            if ((username === 'admin' || username === 'administrator') && password === correctPassword) {
                 document.getElementById('success-text').textContent = 'Đăng nhập thành công!';
                 document.getElementById('success-message').style.display = 'block';
                 
-                // Redirect to dashboard after 1 second
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1000);
-            } else if (username === 'administrator' && password === 'Manthuong63@') {
-                document.getElementById('success-text').textContent = 'Đăng nhập thành công!';
-                document.getElementById('success-message').style.display = 'block';
+                // Lưu thông tin đăng nhập
+                localStorage.setItem('current_admin', username);
                 
                 // Redirect to dashboard after 1 second
                 setTimeout(() => {
