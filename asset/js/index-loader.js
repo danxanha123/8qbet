@@ -80,16 +80,100 @@ class IndexDataLoader {
 
     // Update banner images
     updateBanners() {
-        const bannerSlides = document.querySelectorAll('.swiper-slide img');
-        if (bannerSlides && this.config.banners) {
-            this.config.banners.forEach((bannerData, index) => {
-                if (bannerSlides[index]) {
-                    // Handle both string (old format) and object (new format)
-                    const bannerSrc = typeof bannerData === 'string' ? bannerData : bannerData.src;
-                    bannerSlides[index].src = bannerSrc;
-                }
-            });
+        const swiperWrapper = document.getElementById('swiper-wrapper');
+        const swiperPagination = document.querySelector('.swiper-pagination');
+        
+        if (!swiperWrapper || !this.config.banners || this.config.banners.length === 0) {
+            // Hide banner section if no banners
+            const bannerSection = document.querySelector('.swiper-container.bann');
+            if (bannerSection) {
+                bannerSection.style.display = 'none';
+            }
+            return;
         }
+        
+        // Show banner section
+        const bannerSection = document.querySelector('.swiper-container.bann');
+        if (bannerSection) {
+            bannerSection.style.display = 'block';
+        }
+        
+        // Clear existing slides
+        swiperWrapper.innerHTML = '';
+        
+        // Create new slides based on config
+        this.config.banners.forEach((bannerData, index) => {
+            const bannerSrc = typeof bannerData === 'string' ? bannerData : bannerData.src;
+            const bannerName = typeof bannerData === 'string' ? `Banner ${index + 1}` : bannerData.fileName;
+            
+            const slide = document.createElement('li');
+            slide.className = 'swiper-slide';
+            slide.setAttribute('data-swiper-slide-index', index);
+            slide.style.width = '710px';
+            
+            const img = document.createElement('img');
+            img.src = bannerSrc;
+            img.alt = bannerName;
+            
+            slide.appendChild(img);
+            swiperWrapper.appendChild(slide);
+        });
+        
+        // Update pagination
+        this.updateBannerPagination();
+        
+        // Reinitialize Swiper if it exists
+        this.reinitializeSwiper();
+    }
+
+    // Update banner pagination
+    updateBannerPagination() {
+        const swiperPagination = document.querySelector('.swiper-pagination');
+        if (!swiperPagination || !this.config.banners) return;
+        
+        // Clear existing pagination
+        swiperPagination.innerHTML = '';
+        
+        // Create new pagination bullets
+        this.config.banners.forEach((_, index) => {
+            const bullet = document.createElement('span');
+            bullet.className = 'swiper-pagination-bullet';
+            bullet.setAttribute('tabindex', '0');
+            bullet.setAttribute('role', 'button');
+            bullet.setAttribute('aria-label', `Go to slide ${index + 1}`);
+            swiperPagination.appendChild(bullet);
+        });
+    }
+
+    // Reinitialize Swiper
+    reinitializeSwiper() {
+        // Destroy existing Swiper instance if it exists
+        if (window.swiperInstance) {
+            window.swiperInstance.destroy(true, true);
+        }
+        
+        // Wait a bit for DOM to update, then reinitialize
+        setTimeout(() => {
+            if (typeof Swiper !== 'undefined' && this.config.banners && this.config.banners.length > 0) {
+                const swiperConfig = {
+                    pagination: {
+                        el: '.bann .swiper-pagination',
+                        clickable: true,
+                    },
+                    autoplay: {
+                        delay: 3000,
+                        disableOnInteraction: false,
+                    },
+                };
+                
+                // Only enable loop if there are more than 1 banners
+                if (this.config.banners.length > 1) {
+                    swiperConfig.loop = true;
+                }
+                
+                window.swiperInstance = new Swiper('.bann', swiperConfig);
+            }
+        }, 100);
     }
 
     // Update links
@@ -197,6 +281,11 @@ class IndexDataLoader {
     refresh() {
         this.config = this.loadConfig();
         this.init();
+        
+        // Force reinitialize Swiper after refresh
+        setTimeout(() => {
+            this.reinitializeSwiper();
+        }, 200);
     }
 }
 

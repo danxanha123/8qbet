@@ -208,8 +208,8 @@
     <script src="asset/js/index-loader.js"></script>
     <script>
         $(document).ready(function () {
-            // Initialize Swiper
-            var swiper = new Swiper('.bann', {
+            // Initialize Swiper - will be reinitialized by index-loader.js
+            window.swiperInstance = new Swiper('.bann', {
                 pagination: {
                     el: '.bann .swiper-pagination',
                     clickable: true,
