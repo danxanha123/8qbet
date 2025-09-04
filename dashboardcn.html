@@ -214,43 +214,384 @@
                                         </div>
                                     </div>
                                 </div>
+                                
+                                <!-- 背景管理 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-image"></i> 背景管理</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <img src="asset/images/background.jpg" alt="当前背景" style="max-width: 200px; max-height: 100px; object-fit: cover; border-radius: 5px;">
+                                                <p class="mt-2 text-muted">当前背景</p>
+                                            </div>
+                                            
+                                            <form id="background-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">上传新背景</label>
+                                                    <input type="file" class="form-control" id="background-file" accept="image/*">
+                                                    <small class="text-muted">建议：JPG/PNG，最大尺寸1920x1080px</small>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-upload"></i> 更新背景
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- 其他标签页... -->
+                        <!-- 颜色管理 -->
                         <div class="tab-pane fade" id="colors">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> 颜色管理功能与越南语版本相同
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-paint-brush"></i> 颜色管理</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <form id="colors-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">背景类型</label>
+                                                    <select class="form-select" id="background-type" onchange="toggleBackgroundType(this.value)">
+                                                        <option value="color" selected>颜色</option>
+                                                        <option value="image">图片</option>
+                                                    </select>
+                                                </div>
+                                                
+                                                <div class="mb-3" id="background-color-group">
+                                                    <label class="form-label">背景颜色</label>
+                                                    <input type="color" class="form-control form-control-color w-100" id="background-color" value="#121712">
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">容器背景颜色</label>
+                                                    <input type="color" class="form-control form-control-color w-100" id="container-bg-color" value="#5a1616">
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">跑马灯文字颜色</label>
+                                                    <input type="color" class="form-control form-control-color w-100" id="marquee-color" value="#ffffff">
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-save"></i> 保存颜色设置
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- 网站图标管理 -->
                         <div class="tab-pane fade" id="favicon">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> 网站图标管理功能与越南语版本相同
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-star"></i> 网站图标管理</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <img src="asset/images/68b29b5d9a666.png" alt="当前网站图标" style="width: 32px; height: 32px; object-fit: contain;">
+                                                <p class="mt-2 text-muted">当前网站图标</p>
+                                            </div>
+                                            
+                                            <form id="favicon-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">上传新网站图标</label>
+                                                    <input type="file" class="form-control" id="favicon-file" accept="image/*,.ico">
+                                                    <small class="text-muted">支持：PNG, ICO，最大尺寸32x32px</small>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-upload"></i> 更新网站图标
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- 页脚管理 -->
                         <div class="tab-pane fade" id="footer">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> 页脚管理功能与越南语版本相同
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5 class="mb-0"><i class="fas fa-shoe-prints"></i> 页脚管理</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="text-center mb-3">
+                                                <img src="asset/images/68b29a2d69d64.jpeg" alt="当前页脚图片" style="max-width: 200px; max-height: 100px; object-fit: cover; border-radius: 5px;">
+                                                <p class="mt-2 text-muted">当前页脚图片</p>
+                                            </div>
+                                            
+                                            <form id="footer-form">
+                                                <div class="mb-3">
+                                                    <label class="form-label">页脚链接</label>
+                                                    <input type="url" class="form-control" id="footer-link" value="https://www.93375347.com/" required>
+                                                </div>
+                                                
+                                                <div class="mb-3">
+                                                    <label class="form-label">上传新页脚图片（可选）</label>
+                                                    <input type="file" class="form-control" id="footer-image-file" accept="image/*">
+                                                    <small class="text-muted">留空表示不更改图片</small>
+                                                </div>
+                                                
+                                                <button type="submit" class="btn btn-primary w-100">
+                                                    <i class="fas fa-save"></i> 更新页脚
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- 横幅管理 -->
                         <div class="tab-pane fade" id="banners">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> 横幅管理功能与越南语版本相同
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-images"></i> 横幅管理</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="banner-upload-form" class="mb-4">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <label class="form-label">上传新横幅图片</label>
+                                                <input type="file" class="form-control" id="banner-file" accept="image/*" required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">&nbsp;</label>
+                                                <button type="submit" class="btn btn-primary d-block w-100">
+                                                    <i class="fas fa-upload"></i> 上传
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <h6>当前横幅：</h6>
+                                    <div class="row" id="banners-container">
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="asset/images/68b29ac2d3515.jpg" class="card-img-top" alt="横幅 1">
+                                                <div class="card-body p-2">
+                                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(0)">
+                                                        <i class="fas fa-trash"></i> 删除
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="asset/images/68b29ace6e010.jpg" class="card-img-top" alt="横幅 2">
+                                                <div class="card-body p-2">
+                                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(1)">
+                                                        <i class="fas fa-trash"></i> 删除
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="asset/images/68b29ad604fe7.jpg" class="card-img-top" alt="横幅 3">
+                                                <div class="card-body p-2">
+                                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(2)">
+                                                        <i class="fas fa-trash"></i> 删除
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 mb-3">
+                                            <div class="card">
+                                                <img src="asset/images/68b29addeda4e.jpg" class="card-img-top" alt="横幅 4">
+                                                <div class="card-body p-2">
+                                                    <button class="btn btn-danger btn-sm w-100" onclick="deleteBanner(3)">
+                                                        <i class="fas fa-trash"></i> 删除
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- 链接管理 -->
                         <div class="tab-pane fade" id="links">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> 链接管理功能与越南语版本相同
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-link"></i> 链接管理</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="links-form">
+                                        <div id="links-container">
+                                            <div class="row mb-3 link-item">
+                                                <div class="col-md-2">
+                                                    <label class="form-label">链接名称</label>
+                                                    <input type="text" class="form-control" name="links[0][name]" value="Link1" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">显示文本</label>
+                                                    <input type="text" class="form-control" name="links[0][showUrl]" value="立即领取" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">目标URL</label>
+                                                    <input type="url" class="form-control" name="links[0][jumpUrl]" value="https://www.93375347.com/" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">图标</label>
+                                                    <input type="text" class="form-control" name="links[0][icon]" value="asset/images/8q.png" required>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 link-item">
+                                                <div class="col-md-2">
+                                                    <label class="form-label">链接名称</label>
+                                                    <input type="text" class="form-control" name="links[1][name]" value="Link2" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">显示文本</label>
+                                                    <input type="text" class="form-control" name="links[1][showUrl]" value="值得信赖" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">目标URL</label>
+                                                    <input type="url" class="form-control" name="links[1][jumpUrl]" value="https://www.93375347.com/" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">图标</label>
+                                                    <input type="text" class="form-control" name="links[1][icon]" value="asset/images/8q.png" required>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 link-item">
+                                                <div class="col-md-2">
+                                                    <label class="form-label">链接名称</label>
+                                                    <input type="text" class="form-control" name="links[2][name]" value="Link3" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">显示文本</label>
+                                                    <input type="text" class="form-control" name="links[2][showUrl]" value="高安全性" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">目标URL</label>
+                                                    <input type="url" class="form-control" name="links[2][jumpUrl]" value="https://www.93375347.com/" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">图标</label>
+                                                    <input type="text" class="form-control" name="links[2][icon]" value="asset/images/8q.png" required>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-3 link-item">
+                                                <div class="col-md-2">
+                                                    <label class="form-label">链接名称</label>
+                                                    <input type="text" class="form-control" name="links[3][name]" value="Link4" required>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label class="form-label">显示文本</label>
+                                                    <input type="text" class="form-control" name="links[3][showUrl]" value="快速提款" required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label class="form-label">目标URL</label>
+                                                    <input type="url" class="form-control" name="links[3][jumpUrl]" value="https://www.93375347.com/" required>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label">图标</label>
+                                                    <input type="text" class="form-control" name="links[3][icon]" value="asset/images/8q.png" required>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <label class="form-label">&nbsp;</label>
+                                                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="button" class="btn btn-success mb-3" id="add-link">
+                                            <i class="fas fa-plus"></i> 添加链接
+                                        </button>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save"></i> 保存更改
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
 
+                        <!-- 更改密码 -->
                         <div class="tab-pane fade" id="password">
-                            <div class="alert alert-info">
-                                <i class="fas fa-info-circle"></i> 密码更改功能与越南语版本相同
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-key"></i> 更改密码</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form id="password-form">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">当前账户</label>
+                                                    <input type="text" class="form-control" id="current-account" value="admin" readonly>
+                                                    <small class="text-muted">当前登录账户</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">当前密码</label>
+                                                    <input type="password" class="form-control" id="current-password" required>
+                                                    <small class="text-muted">请输入当前密码以确认身份</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">新密码</label>
+                                                    <input type="password" class="form-control" id="new-password" required>
+                                                    <small class="text-muted">新密码至少需要6个字符</small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label class="form-label">确认新密码</label>
+                                                    <input type="password" class="form-control" id="confirm-password" required>
+                                                    <small class="text-muted">请再次输入新密码</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-key"></i> 更改密码
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -262,6 +603,32 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // 中文版本的管理功能
+        let currentConfig = {
+            title: "8Qbet.com 安全检查链接访问",
+            marquee: "欢迎来到8Qbet.com – 首充优惠，每月会员日，特殊VIP等级，推荐好友奖励，超快存取款 – 安全可靠，无风险！",
+            appUrl: "https://www.93375347.com/down",
+            serviceUrl: "https://xzjhsn5po7.lyau1vg8.com/chatwindow.aspx?siteId=65002665&planId=54c0e15d-3356-4460-abe0-648cd6d0bbee",
+            logo_size: 50,
+            background_type: "color",
+            background_color: "#121712",
+            container_bg_color: "#5a1616",
+            marquee_color: "#ffffff",
+            footer_link: "https://www.93375347.com/",
+            banners: [
+                "asset/images/68b29ac2d3515.jpg",
+                "asset/images/68b29ace6e010.jpg",
+                "asset/images/68b29ad604fe7.jpg",
+                "asset/images/68b29addeda4e.jpg"
+            ],
+            links: [
+                { name: "Link1", showUrl: "立即领取", jumpUrl: "https://www.93375347.com/", icon: "asset/images/8q.png" },
+                { name: "Link2", showUrl: "值得信赖", jumpUrl: "https://www.93375347.com/", icon: "asset/images/8q.png" },
+                { name: "Link3", showUrl: "高安全性", jumpUrl: "https://www.93375347.com/", icon: "asset/images/8q.png" },
+                { name: "Link4", showUrl: "快速提款", jumpUrl: "https://www.93375347.com/", icon: "asset/images/8q.png" }
+            ]
+        };
+
+        // 显示消息函数
         function showMessage(message, type = 'success') {
             const messageContainer = document.getElementById('message-container');
             const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
@@ -281,22 +648,154 @@
         // 表单处理
         document.getElementById('general-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            currentConfig.title = document.getElementById('title').value;
+            currentConfig.marquee = document.getElementById('marquee').value;
+            currentConfig.appUrl = document.getElementById('appUrl').value;
+            currentConfig.serviceUrl = document.getElementById('serviceUrl').value;
             showMessage('更新基本信息成功！');
         });
 
         document.getElementById('logo-settings-form').addEventListener('submit', function(e) {
             e.preventDefault();
+            currentConfig.logo_size = document.getElementById('logo-size-slider').value;
             showMessage('更新标志大小成功！');
         });
 
+        document.getElementById('colors-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            currentConfig.background_type = document.getElementById('background-type').value;
+            currentConfig.background_color = document.getElementById('background-color').value;
+            currentConfig.container_bg_color = document.getElementById('container-bg-color').value;
+            currentConfig.marquee_color = document.getElementById('marquee-color').value;
+            showMessage('更新颜色设置成功！');
+        });
+
+        document.getElementById('footer-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            currentConfig.footer_link = document.getElementById('footer-link').value;
+            showMessage('更新页脚设置成功！');
+        });
+
+        document.getElementById('password-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            
+            if (newPassword !== confirmPassword) {
+                showMessage('新密码和确认密码不匹配！', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showMessage('新密码至少需要6个字符！', 'error');
+                return;
+            }
+            
+            showMessage('更改密码成功！');
+            document.getElementById('password-form').reset();
+        });
+
+        // 文件上传处理（演示）
         document.getElementById('logo-form').addEventListener('submit', function(e) {
             e.preventDefault();
-            showMessage('上传标志成功！');
+            const file = document.getElementById('logo-file').files[0];
+            if (file) {
+                showMessage('上传标志成功！');
+            }
+        });
+
+        document.getElementById('background-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('background-file').files[0];
+            if (file) {
+                showMessage('上传背景成功！');
+            }
+        });
+
+        document.getElementById('favicon-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('favicon-file').files[0];
+            if (file) {
+                showMessage('上传网站图标成功！');
+            }
+        });
+
+        document.getElementById('banner-upload-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const file = document.getElementById('banner-file').files[0];
+            if (file) {
+                showMessage('上传横幅成功！');
+                document.getElementById('banner-upload-form').reset();
+            }
+        });
+
+        // 横幅管理
+        function deleteBanner(index) {
+            if (confirm('您确定要删除这个横幅吗？')) {
+                showMessage('删除横幅成功！');
+            }
+        }
+
+        // 链接管理
+        document.getElementById('add-link').addEventListener('click', function() {
+            const container = document.getElementById('links-container');
+            const linkCount = container.children.length;
+            const newLink = document.createElement('div');
+            newLink.className = 'row mb-3 link-item';
+            newLink.innerHTML = `
+                <div class="col-md-2">
+                    <label class="form-label">链接名称</label>
+                    <input type="text" class="form-control" name="links[${linkCount}][name]" required>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">显示文本</label>
+                    <input type="text" class="form-control" name="links[${linkCount}][showUrl]" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">目标URL</label>
+                    <input type="url" class="form-control" name="links[${linkCount}][jumpUrl]" required>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">图标</label>
+                    <input type="text" class="form-control" name="links[${linkCount}][icon]" value="asset/images/8q.png" required>
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="button" class="btn btn-danger btn-sm d-block w-100 remove-link">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(newLink);
+        });
+
+        // 删除链接
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-link') || e.target.closest('.remove-link')) {
+                if (confirm('您确定要删除这个链接吗？')) {
+                    e.target.closest('.link-item').remove();
+                }
+            }
+        });
+
+        document.getElementById('links-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showMessage('更新链接列表成功！');
         });
 
         // 工具函数
         function updateLogoSize(value) {
             document.getElementById('logo-size-value').textContent = value + '%';
+        }
+
+        function toggleBackgroundType(type) {
+            const colorGroup = document.getElementById('background-color-group');
+            if (type === 'color') {
+                colorGroup.style.display = 'block';
+            } else {
+                colorGroup.style.display = 'none';
+            }
         }
 
         function changeLanguage(selectedValue) {
