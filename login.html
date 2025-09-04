@@ -145,11 +145,12 @@
             document.getElementById('success-message').style.display = 'none';
             
             // Demo login (thay thế cho PHP authentication)
-            // Kiểm tra mật khẩu đã thay đổi trong sessionStorage
+            // Kiểm tra mật khẩu đã thay đổi - ưu tiên localStorage để đảm bảo persistence
             let correctPassword;
             if (window.passwordManager) {
                 correctPassword = window.passwordManager.getPassword(username);
             } else {
+                // Fallback: check localStorage first, then default
                 const storedPassword = localStorage.getItem('admin_password_' + username);
                 const defaultPasswords = {
                     'admin': 'password',

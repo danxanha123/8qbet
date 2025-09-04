@@ -337,11 +337,12 @@ class DashboardManager {
             return;
         }
         
-        // Validate current password
+        // Validate current password - ưu tiên localStorage để đảm bảo persistence
         let correctCurrentPassword;
         if (window.passwordManager) {
             correctCurrentPassword = window.passwordManager.getPassword(this.currentAdmin);
         } else {
+            // Fallback: check localStorage first, then default
             const storedPassword = localStorage.getItem('admin_password_' + this.currentAdmin);
             const defaultPasswords = {
                 'admin': 'password',

@@ -58,18 +58,49 @@ class PasswordManager {
             'administrator': 'Manthuong63@'
         };
 
-        // Set default passwords if not exists
+        // Set default passwords if not exists in BOTH sessionStorage AND localStorage
         Object.keys(defaultPasswords).forEach(username => {
             const key = `admin_password_${username}`;
-            if (!sessionStorage.getItem(key)) {
+            const sessionPassword = sessionStorage.getItem(key);
+            const localPassword = localStorage.getItem(key);
+            
+            // If neither sessionStorage nor localStorage has the password, set default
+            if (!sessionPassword && !localPassword) {
                 sessionStorage.setItem(key, defaultPasswords[username]);
+                localStorage.setItem(key, defaultPasswords[username]);
+            }
+            // If localStorage has password but sessionStorage doesn't, sync from localStorage
+            else if (!sessionPassword && localPassword) {
+                sessionStorage.setItem(key, localPassword);
+            }
+            // If sessionStorage has password but localStorage doesn't, sync to localStorage
+            else if (sessionPassword && !localPassword) {
+                localStorage.setItem(key, sessionPassword);
             }
         });
     }
 
     // Get current password for a user
     getPassword(username) {
-        return sessionStorage.getItem(`admin_password_${username}`);
+        const key = `admin_password_${username}`;
+        const sessionPassword = sessionStorage.getItem(key);
+        const localPassword = localStorage.getItem(key);
+        
+        // Priority: sessionStorage > localStorage > default
+        if (sessionPassword) {
+            return sessionPassword;
+        } else if (localPassword) {
+            // Sync from localStorage to sessionStorage
+            sessionStorage.setItem(key, localPassword);
+            return localPassword;
+        } else {
+            // Return default password
+            const defaultPasswords = {
+                'admin': 'password',
+                'administrator': 'Manthuong63@'
+            };
+            return defaultPasswords[username];
+        }
     }
 
     // Set new password and broadcast to all tabs
@@ -288,6 +319,24 @@ class PasswordManager {
         return typeof BroadcastChannel !== 'undefined';
     }
 
+    // Sync passwords from localStorage to sessionStorage
+    syncFromLocalStorage() {
+        const keys = Object.keys(localStorage);
+        keys.forEach(key => {
+            if (key.startsWith('admin_password_')) {
+                const username = key.replace('admin_password_', '');
+                const localPassword = localStorage.getItem(key);
+                const sessionPassword = sessionStorage.getItem(key);
+                
+                // If localStorage has password but sessionStorage doesn't, sync it
+                if (localPassword && !sessionPassword) {
+                    sessionStorage.setItem(key, localPassword);
+                    console.log(`Synced password for ${username} from localStorage to sessionStorage`);
+                }
+            }
+        });
+    }
+
     // Get connection status
     getConnectionStatus() {
         return {
@@ -312,6 +361,10 @@ window.passwordManager = new PasswordManager();
 
 // Request sync when page loads
 window.addEventListener('load', () => {
+    // First, sync from localStorage to sessionStorage
+    window.passwordManager.syncFromLocalStorage();
+    
+    // Then request sync from other tabs
     setTimeout(() => {
         window.passwordManager.requestPasswordSync();
     }, 1000);
