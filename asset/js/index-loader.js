@@ -309,9 +309,28 @@ document.addEventListener('DOMContentLoaded', function() {
     window.indexDataLoader = new IndexDataLoader();
 });
 
-// Listen for storage changes to auto-refresh
+// Listen for storage changes to auto-refresh (cross-tab communication)
 window.addEventListener('storage', function(e) {
     if (e.key === 'dashboard_config' && window.indexDataLoader) {
         window.indexDataLoader.refresh();
     }
 });
+
+// Listen for custom config updates (same-tab communication)
+window.addEventListener('configUpdated', function(e) {
+    if (window.indexDataLoader && e.detail && e.detail.config) {
+        window.indexDataLoader.refresh();
+    }
+});
+
+// Polling mechanism as fallback for cross-tab sync
+let lastConfigUpdate = localStorage.getItem('config_last_updated');
+setInterval(function() {
+    const currentUpdate = localStorage.getItem('config_last_updated');
+    if (currentUpdate && currentUpdate !== lastConfigUpdate) {
+        lastConfigUpdate = currentUpdate;
+        if (window.indexDataLoader) {
+            window.indexDataLoader.refresh();
+        }
+    }
+}, 1000); // Check every second

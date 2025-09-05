@@ -16,6 +16,7 @@ class DashboardManager {
         this.updateCurrentUser();
         this.bindEvents();
         this.loadSavedData();
+        this.setupCrossTabSync();
     }
 
     // Detect current language
@@ -90,7 +91,12 @@ class DashboardManager {
 
     // Notify index page to refresh data
     notifyIndexPage() {
-        // Trigger storage event for same-tab communication
+        // Trigger custom event for same-tab communication
+        window.dispatchEvent(new CustomEvent('configUpdated', {
+            detail: { config: this.currentConfig }
+        }));
+        
+        // Trigger storage event for cross-tab communication
         window.dispatchEvent(new StorageEvent('storage', {
             key: 'dashboard_config',
             newValue: JSON.stringify(this.currentConfig)
@@ -100,6 +106,10 @@ class DashboardManager {
         if (window.indexDataLoader) {
             window.indexDataLoader.refresh();
         }
+        
+        // Force refresh all open tabs by updating localStorage
+        localStorage.setItem('dashboard_config', JSON.stringify(this.currentConfig));
+        localStorage.setItem('config_last_updated', Date.now().toString());
     }
 
     // Update current user display
@@ -643,6 +653,53 @@ class DashboardManager {
         if (selectedValue !== window.location.pathname.split('/').pop()) {
             window.location.href = selectedValue;
         }
+    }
+
+    // Setup cross-tab synchronization
+    setupCrossTabSync() {
+        // Listen for storage changes from other tabs
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'dashboard_config' && e.newValue) {
+                try {
+                    const newConfig = JSON.parse(e.newValue);
+                    this.currentConfig = { ...this.currentConfig, ...newConfig };
+                    this.loadSavedData();
+                    this.showMessage(
+                        this.language === 'cn' ? '配置已从其他标签页同步！' : 'Cấu hình đã được đồng bộ từ tab khác!', 
+                        'success'
+                    );
+                } catch (error) {
+                    console.error('Error parsing config from storage:', error);
+                }
+            }
+        });
+
+        // Listen for custom config updates
+        window.addEventListener('configUpdated', (e) => {
+            if (e.detail && e.detail.config) {
+                this.currentConfig = { ...this.currentConfig, ...e.detail.config };
+                this.loadSavedData();
+            }
+        });
+
+        // Polling mechanism as fallback
+        let lastConfigUpdate = localStorage.getItem('config_last_updated');
+        setInterval(() => {
+            const currentUpdate = localStorage.getItem('config_last_updated');
+            if (currentUpdate && currentUpdate !== lastConfigUpdate) {
+                lastConfigUpdate = currentUpdate;
+                const savedConfig = localStorage.getItem('dashboard_config');
+                if (savedConfig) {
+                    try {
+                        const newConfig = JSON.parse(savedConfig);
+                        this.currentConfig = { ...this.currentConfig, ...newConfig };
+                        this.loadSavedData();
+                    } catch (error) {
+                        console.error('Error parsing config from polling:', error);
+                    }
+                }
+            }
+        }, 1000);
     }
 }
 
