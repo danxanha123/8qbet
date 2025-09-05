@@ -19,6 +19,7 @@ class IndexDataLoader {
             logo_size: 50,
             background_type: "color",
             background_color: "#121712",
+            background_image: "",
             container_bg_color: "#5a1616",
             marquee_color: "#ffffff",
             footer_link: "https://www.93375347.com/",
@@ -230,9 +231,23 @@ class IndexDataLoader {
 
     // Update colors
     updateColors() {
-        // Update background color
-        if (this.config.background_color) {
-            document.body.style.backgroundColor = this.config.background_color;
+        // Update background based on type
+        if (this.config.background_type === 'image' && this.config.background_image) {
+            // Set background image
+            document.body.style.backgroundImage = `url('${this.config.background_image}')`;
+            document.body.style.backgroundSize = 'cover';
+            document.body.style.backgroundPosition = 'center';
+            document.body.style.backgroundRepeat = 'no-repeat';
+            document.body.style.backgroundColor = ''; // Clear background color
+        } else {
+            // Set background color
+            document.body.style.backgroundImage = '';
+            document.body.style.backgroundSize = '';
+            document.body.style.backgroundPosition = '';
+            document.body.style.backgroundRepeat = '';
+            if (this.config.background_color) {
+                document.body.style.backgroundColor = this.config.background_color;
+            }
         }
         
         // Update container background color

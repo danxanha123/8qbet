@@ -38,6 +38,7 @@ class DashboardManager {
             logo_size: 50,
             background_type: "color",
             background_color: "#121712",
+            background_image: "",
             container_bg_color: "#5a1616",
             marquee_color: "#ffffff",
             footer_link: "https://www.93375347.com/",
@@ -138,6 +139,14 @@ class DashboardManager {
         this.setValue('background-color', this.currentConfig.background_color);
         this.setValue('container-bg-color', this.currentConfig.container_bg_color);
         this.setValue('marquee-color', this.currentConfig.marquee_color);
+        
+        // Load background image if exists
+        if (this.currentConfig.background_image) {
+            const backgroundPreview = document.querySelector('#branding .col-md-6:last-child .text-center img');
+            if (backgroundPreview) {
+                backgroundPreview.src = this.currentConfig.background_image;
+            }
+        }
         
         // Load footer
         this.setValue('footer-link', this.currentConfig.footer_link);
@@ -285,6 +294,12 @@ class DashboardManager {
         this.currentConfig.background_color = this.getValue('background-color');
         this.currentConfig.container_bg_color = this.getValue('container-bg-color');
         this.currentConfig.marquee_color = this.getValue('marquee-color');
+        
+        // If switching to color type, clear background image
+        if (this.currentConfig.background_type === 'color') {
+            this.currentConfig.background_image = '';
+        }
+        
         this.saveConfig();
         this.showMessage(this.language === 'cn' ? '更新颜色设置成功！' : 'Cập nhật màu sắc thành công!');
         this.previewChanges();
@@ -377,7 +392,15 @@ class DashboardManager {
         e.preventDefault();
         const file = document.getElementById('background-file').files[0];
         if (file) {
-            this.showMessage(this.language === 'cn' ? '上传背景成功！' : 'Upload background thành công!');
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.currentConfig.background_image = e.target.result;
+                this.currentConfig.background_type = 'image';
+                this.saveConfig();
+                this.showMessage(this.language === 'cn' ? '上传背景成功！' : 'Upload background thành công!');
+                this.previewChanges();
+            };
+            reader.readAsDataURL(file);
         }
     }
 
@@ -573,8 +596,14 @@ class DashboardManager {
 
     toggleBackgroundType(type) {
         const colorGroup = document.getElementById('background-color-group');
+        const backgroundForm = document.getElementById('background-form');
+        
         if (colorGroup) {
             colorGroup.style.display = type === 'color' ? 'block' : 'none';
+        }
+        
+        if (backgroundForm) {
+            backgroundForm.style.display = type === 'image' ? 'block' : 'none';
         }
     }
 
