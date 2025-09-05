@@ -3,7 +3,7 @@
  * Clean and simple implementation
  */
 
-class DashboardManager {
+class SimpleDashboardManager {
     constructor() {
         this.currentConfig = this.loadConfig();
         this.currentAdmin = localStorage.getItem('current_admin') || 'admin';
@@ -595,7 +595,7 @@ let dashboardManager;
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    dashboardManager = new DashboardManager();
+    dashboardManager = new SimpleDashboardManager();
 });
 
 // Global functions

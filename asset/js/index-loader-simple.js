@@ -3,7 +3,7 @@
  * Clean and simple implementation
  */
 
-class IndexDataLoader {
+class SimpleIndexDataLoader {
     constructor() {
         this.config = this.loadConfig();
         this.init();
@@ -296,5 +296,5 @@ class IndexDataLoader {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    window.indexDataLoader = new IndexDataLoader();
+    window.indexDataLoader = new SimpleIndexDataLoader();
 });
