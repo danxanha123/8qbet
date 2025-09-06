@@ -1,4 +1,4 @@
-// Cấu hình website - thay thế cho PHP config
+// Cấu hình website 8Qbet
 const websiteConfig = {
     title: "8Qbet.com Kiểm Tra Độ An Toàn Link Truy Cập",
     favicon: "asset/images/68b29b5d9a666.png",
